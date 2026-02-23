@@ -10,7 +10,7 @@ A simple calculator I created with the assistance of prompt engineering.
 - CSS
 - Vicual Studio Code
 
-- 
+
 ## Features
 
 <!-- What the users can do -->
