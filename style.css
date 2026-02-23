@@ -1,0 +1,160 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex; /* Center the phone container both vertically and horizontally */
+  align-items: center; /* Center the phone container vertically */
+  justify-content: center; /* Center the phone container horizontally */
+  background: #1a1a1a;
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+}
+
+.phone {
+  width: 393px;
+  background: #000;
+  border-radius: 54px;
+  padding: 14px;
+  box-shadow:
+    0 0 0 1.5px #3a3a3a,
+    0 0 0 3px #1c1c1c,
+    0 40px 100px rgba(0, 0, 0, 0.8),
+    inset 0 0 0 1px #2a2a2a;
+  position: relative;
+}
+
+.phone-inner {
+  background: #000;
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Dynamic island */
+.dynamic-island {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 10;
+  box-shadow: 0 0 0 1px #1a1a1a;
+}
+
+.screen {
+  background: #000;
+  padding: 60px 0 0;
+  min-height: 650px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* Display */
+.display {
+  padding: 0 24px 8px;
+  text-align: right;
+}
+
+.expression {
+  font-size: 20px;
+  color: #666;
+  min-height: 28px;
+  margin-bottom: 2px;
+  letter-spacing: -0.3px;
+  font-weight: 300;
+}
+
+.result {
+  font-size: 80px;
+  color: #fff;
+  font-weight: 300;
+  letter-spacing: -4px;
+  line-height: 1;
+  transition: font-size 0.15s ease;
+}
+
+.result.small {
+  font-size: 56px;
+  letter-spacing: -2px;
+}
+.result.xsmall {
+  font-size: 42px;
+  letter-spacing: -1px;
+}
+
+/* Button grid */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 20px 16px 36px;
+}
+
+.btn {
+  height: 82px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  font-size: 34px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    filter 0.08s ease,
+    transform 0.08s ease;
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  letter-spacing: -0.5px;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.btn:active {
+  filter: brightness(1.4);
+  transform: scale(0.96);
+}
+
+/* Button types */
+.btn-gray {
+  background: #a5a5a5;
+  color: #000;
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.btn-dark {
+  background: #333333;
+  color: #fff;
+}
+
+.btn-orange {
+  background: #ff9f0a;
+  color: #fff;
+}
+
+/* Zero button spans 2 columns */
+.btn-zero {
+  grid-column: span 2;
+  border-radius: 50px;
+  justify-content: flex-start;
+  padding-left: 30px;
+}
+
+/* Bottom home indicator */
+.home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 5px;
+  background: #444;
+  border-radius: 3px;
+}

@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>iPhone Calculator</title>
+    <style></style>
+  </head>
+  <body>
+    <div class="phone">
+      <div class="phone-inner">
+        <div class="dynamic-island"></div>
+        <div class="screen">
+          <div class="display">
+            <div class="expression" id="expression"></div>
+            <div class="result" id="result">0</div>
+          </div>
+
+          <div class="buttons">
+            <!-- Row 1 -->
+            <button class="btn btn-gray" data-action="clear">AC</button>
+            <button class="btn btn-gray" data-action="negate">+/−</button>
+            <button class="btn btn-gray" data-action="percent">%</button>
+            <button
+              class="btn btn-orange"
+              data-action="operator"
+              data-value="÷"
+            >
+              ÷
+            </button>
+
+            <!-- Row 2 -->
+            <button class="btn btn-dark" data-action="digit" data-value="7">
+              7
+            </button>
+            <button class="btn btn-dark" data-action="digit" data-value="8">
+              8
+            </button>
+            <button class="btn btn-dark" data-action="digit" data-value="9">
+              9
+            </button>
+            <button
+              class="btn btn-orange"
+              data-action="operator"
+              data-value="×"
+            >
+              ×
+            </button>
+
+            <!-- Row 3 -->
+            <button class="btn btn-dark" data-action="digit" data-value="4">
+              4
+            </button>
+            <button class="btn btn-dark" data-action="digit" data-value="5">
+              5
+            </button>
+            <button class="btn btn-dark" data-action="digit" data-value="6">
+              6
+            </button>
+            <button
+              class="btn btn-orange"
+              data-action="operator"
+              data-value="−"
+            >
+              −
+            </button>
+
+            <!-- Row 4 -->
+            <button class="btn btn-dark" data-action="digit" data-value="1">
+              1
+            </button>
+            <button class="btn btn-dark" data-action="digit" data-value="2">
+              2
+            </button>
+            <button class="btn btn-dark" data-action="digit" data-value="3">
+              3
+            </button>
+            <button
+              class="btn btn-orange"
+              data-action="operator"
+              data-value="+"
+            >
+              +
+            </button>
+
+            <!-- Row 5 -->
+            <button
+              class="btn btn-dark btn-zero"
+              data-action="digit"
+              data-value="0"
+            >
+              0
+            </button>
+            <button class="btn btn-dark" data-action="decimal">.</button>
+            <button class="btn btn-orange" data-action="equals">=</button>
+          </div>
+        </div>
+
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+
+    <script>
+      let current = "0"; /* Holds the current input or result */
+      let expression = ""; /* Holds what is being built */
+      let operator = null;
+      let prevValue = null;
+      let justEvaluated = false;
+
+      const resultEl = document.getElementById("result");
+      const expressionEl = document.getElementById("expression");
+
+      // Updates the result display and adjusts font size based on length
+      function updateDisplay(val) {
+        resultEl.textContent = val;
+        const len = val.toString().length;
+        resultEl.className =
+          "result" + (len > 9 ? " xsmall" : len > 6 ? " small" : "");
+      }
+
+      // Formats numbers to avoid long digits.
+      function formatNum(n) {
+        const num = parseFloat(n);
+        if (isNaN(num)) return "0";
+        // Format with up to 9 significant digits
+        const str = parseFloat(num.toPrecision(9)).toString();
+        return str;
+      }
+
+      document.querySelectorAll(".btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const action = btn.dataset.action; /*Get the type of button*/
+          const value = btn.dataset.value; /*Get the digit or operator*/
+
+          if (action === "digit") {
+            if (justEvaluated) {
+              current = value;
+              justEvaluated = false;
+            } else
+              current =
+                current === "0"
+                  ? value
+                  : current + value; /* Avoid leading zeros */
+            updateDisplay(current);
+          } else if (action === "decimal") {
+            if (justEvaluated) {
+              current = "0.";
+              justEvaluated = false;
+            } else if (!current.includes(".")) current += ".";
+            updateDisplay(current);
+          } else if (action === "operator") {
+            if (prevValue !== null && !justEvaluated) {
+              const result = calculate(
+                prevValue,
+                parseFloat(current),
+                operator,
+              );
+
+              current = formatNum(result);
+              updateDisplay(current);
+            }
+            prevValue = parseFloat(current);
+            operator = value;
+            expressionEl.textContent = formatNum(current) + " " + value;
+            justEvaluated = false;
+            current = "0";
+            // Highlight active operator
+            document
+              .querySelectorAll(".btn-orange")
+              .forEach((b) => (b.style.background = "#ff9f0a"));
+            btn.style.background = "#fff";
+            btn.style.color = "#ff9f0a";
+          } else if (action === "equals") {
+            if (operator && prevValue !== null) {
+              const result = calculate(
+                prevValue,
+                parseFloat(current),
+                operator,
+              );
+              expressionEl.textContent = "";
+              current = formatNum(result);
+              updateDisplay(current);
+              prevValue = null;
+              operator = null;
+              justEvaluated = true;
+              document.querySelectorAll(".btn-orange").forEach((b) => {
+                b.style.background = "#ff9f0a";
+                b.style.color = "#fff";
+              });
+            }
+          } else if (action === "clear") {
+            current = "0";
+            prevValue = null;
+            operator = null;
+            justEvaluated = false;
+            expressionEl.textContent = "";
+            updateDisplay("0");
+            document.querySelectorAll(".btn-orange").forEach((b) => {
+              b.style.background = "#ff9f0a";
+              b.style.color = "#fff";
+            });
+          } else if (action === "negate") {
+            current = formatNum(parseFloat(current) * -1);
+            updateDisplay(current);
+          } else if (action === "percent") {
+            current = formatNum(parseFloat(current) / 100);
+            updateDisplay(current);
+          }
+        });
+      });
+
+      function calculate(a, b, op) {
+        switch (op) {
+          case "+":
+            return a + b;
+          case "−":
+            return a - b;
+          case "×":
+            return a * b;
+          case "÷":
+            return b !== 0
+              ? a / b
+              : 0; /* If the expression is divided by zero, return 0. */
+          default:
+            return b; /* If no operator, return the current number (handles initial input) */
+        }
+      }
+    </script>
+  </body>
+</html>
